@@ -39,7 +39,7 @@ def create_caption(logger, album_list):
     logger.info('creating caption')
 
     pool_var1 = ['huevos', 'pollas', 'hostias']
-    pool_var2 = ['', 'puta ', 'jodida ']
+    pool_var2 = ['', 'puta ', 'jodida ', 'mierda de ']
     pool_var3 = ['su puta madre ', 'mierda puta ', 'me cago en los cojones ']
     var1 = random.choice(pool_var1)
     var2 = random.choice(pool_var2)

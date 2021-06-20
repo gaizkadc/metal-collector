@@ -1,4 +1,5 @@
 import os
+import image_utils
 
 from instabot import Bot
 
@@ -8,7 +9,9 @@ def instagram_collage(logger, collage_path, caption):
 
     ig_bot = instagram_login(logger)
 
-    ig_bot.upload_photo(collage_path, caption=caption)
+    jpg_collage_path = image_utils.convert_to_jpg(logger, collage_path)
+
+    ig_bot.upload_photo(jpg_collage_path, caption=caption)
 
     logger.info('collage instagrammed')
 

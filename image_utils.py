@@ -202,3 +202,15 @@ def create_collage(logger, album_list):
     collage.save(collage_path)
 
     return collage_path
+
+
+def convert_to_jpg(logger, collage_path):
+    logger.info('converting collage to jpg')
+
+    img_folder_path = os.getenv('IMGS_FOLDER')
+    jpg_collage_path = img_folder_path + '/collage.jpg'
+
+    collage = Image.open(collage_path)
+    collage.save(jpg_collage_path)
+
+    return jpg_collage_path
