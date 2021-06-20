@@ -3,7 +3,7 @@ A bot that collects Last.fm charts and post them to Twitter and IG.
 
 This bot:
 * retrieves your Last.fm weekly charts
-* creates a collage with the most listened to albums from last week
+* creates a collage with the most scrobbled albums from last week
 * tweets it
 * instagrams it
 
