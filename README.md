@@ -33,3 +33,10 @@ TWITTER_ACCESS_TOKEN_SECRET=<access token secret>
 IG_USERNAME=<username>
 IG_PASSWORD=<password>
 ```
+
+## Docker
+
+To run the bot from Docker, create the `.env` file and run:
+```
+docker run --env-file /path/to/.env gaizkadc/metal-collector:latest
+```
