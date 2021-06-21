@@ -26,7 +26,7 @@ def create_header(logger):
     header_size = (900, 225)
     prepare_background(logger, background_path, header_path, header_size)
 
-    gradient_magnitude = 1.8
+    gradient_magnitude = 5
     add_gradient_to_img(logger, header_path, header_size, gradient_magnitude)
 
     write_header(logger, today_str, header_path)
@@ -39,14 +39,14 @@ def create_header(logger):
 def get_background(logger, background_folder_path):
     logger.info('getting background')
 
-    backgrounds = [bg for bg in os.listdir(background_folder_path) if bg.endswith(".png")]
+    backgrounds = [bg for bg in os.listdir(background_folder_path) if (bg.endswith('.png') or bg.endswith('.jpg'))]
     return background_folder_path + '/' + random.choice(backgrounds)
 
 
 def darken_img(logger, img_path, dark_img_path):
     logger.info('darkening image ' + img_path)
 
-    brightness = 1
+    brightness = 0.7
 
     background_img = Image.open(img_path)
     enhancer = ImageEnhance.Brightness(background_img)
@@ -60,19 +60,20 @@ def write_header(logger, today_str, img_path):
     header_font_size = 150
     date_font_size = 80
     fonts_path = os.getenv('FONTS_PATH')
-    header_font = fonts_path + '/The Macabre.otf'
+    header_body_font = fonts_path + '/TheDefiler-LB8g.ttf'
+    header_date_font = fonts_path + '/The Macabre.otf'
 
-    body_font = ImageFont.truetype(header_font, header_font_size)
-    date_font = ImageFont.truetype(header_font, date_font_size)
+    body_font = ImageFont.truetype(header_body_font, header_font_size)
+    date_font = ImageFont.truetype(header_date_font, date_font_size)
 
     img = Image.open(img_path)
     draw = ImageDraw.Draw(img)
 
-    title_position = (40, 25)
+    title_position = (35, 55)
     date_position = (680, 130)
     header_text_color = 'white'
     date_text_color = 'orange'
-    # draw.text(title_position, 'Mi Semana de Metal ' + today_str, text_color, font=body_font)
+
     draw.text(title_position, 'Mi Semana de Metal', header_text_color, font=body_font)
     draw.text(date_position, today_str, date_text_color, font=date_font)
 
@@ -86,11 +87,12 @@ def prepare_background(logger, background_path, resulting_img_path, header_size)
 
     header = Image.new('RGB', header_size)
     bg_image = Image.open(resulting_img_path)
-    bg_image.resize((300, 300), Image.ANTIALIAS)
 
-    header.paste(bg_image, (0, 0))
-    header.paste(bg_image, (300, 0))
-    header.paste(bg_image, (600, 0))
+    tile_size = (300, 300)
+    bg_image = bg_image.resize(tile_size, Image.ANTIALIAS)
+
+    for i in range(0, 3):
+        header.paste(bg_image, (i*tile_size[0], 0))
 
     header.save(resulting_img_path)
 
