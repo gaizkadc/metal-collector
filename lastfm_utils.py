@@ -38,7 +38,7 @@ def unmarshal_artists_and_albums(logger, raw_album_list):
     return chart
 
 
-def get_cover_image(logger, lfm, artist, album):
+def get_cover_img(logger, lfm, artist, album):
     logger.info('getting album cover: ' + artist + ' | ' + album)
 
     album = lfm.get_album(artist, album)
@@ -54,7 +54,7 @@ def get_complete_album_list(logger, lfm, weekly_charts):
     for chart in weekly_charts:
         artist = chart[0]
         album = chart[1]
-        cover = get_cover_image(logger, lfm, artist, album)
+        cover = get_cover_img(logger, lfm, artist, album)
 
         if cover is not None:
             album = {
@@ -64,5 +64,8 @@ def get_complete_album_list(logger, lfm, weekly_charts):
             }
 
             album_list.append(album)
+
+            if len(album_list) == 9:
+                return album_list
 
     return album_list

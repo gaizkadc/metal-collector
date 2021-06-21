@@ -23,11 +23,13 @@ def create_header(logger):
     background_folder_path = os.getenv('BACKGROUND_FOLDER_PATH')
     background_path = get_background(logger, background_folder_path)
 
-    prepare_background(logger, background_path, header_path)
+    header_size = (900, 225)
+    prepare_background(logger, background_path, header_path, header_size)
 
-    text_color = (255, 255, 255)
+    gradient_magnitude = 1.8
+    add_gradient_to_img(logger, header_path, header_size, gradient_magnitude)
 
-    write_header(logger, today_str, header_path, text_color)
+    write_header(logger, today_str, header_path)
 
     logger.info('header image created')
 
@@ -44,34 +46,43 @@ def get_background(logger, background_folder_path):
 def darken_img(logger, img_path, dark_img_path):
     logger.info('darkening image ' + img_path)
 
+    brightness = 1
+
     background_img = Image.open(img_path)
     enhancer = ImageEnhance.Brightness(background_img)
-    darker_background_img = enhancer.enhance(0.4)
+    darker_background_img = enhancer.enhance(brightness)
     darker_background_img.save(dark_img_path)
 
 
-def write_header(logger, today_str, img_path, text_color):
+def write_header(logger, today_str, img_path):
     logger.info('writing title')
 
-    font_size = 135
+    header_font_size = 150
+    date_font_size = 80
     fonts_path = os.getenv('FONTS_PATH')
-    body_font = ImageFont.truetype(fonts_path + '/Montserrat-Bold.ttf', font_size)
+    header_font = fonts_path + '/The Macabre.otf'
+
+    body_font = ImageFont.truetype(header_font, header_font_size)
+    date_font = ImageFont.truetype(header_font, date_font_size)
 
     img = Image.open(img_path)
     draw = ImageDraw.Draw(img)
 
-    title_position = (140, 35)
-    draw.text(title_position, today_str, text_color, font=body_font)
+    title_position = (40, 25)
+    date_position = (680, 130)
+    header_text_color = 'white'
+    date_text_color = 'orange'
+    # draw.text(title_position, 'Mi Semana de Metal ' + today_str, text_color, font=body_font)
+    draw.text(title_position, 'Mi Semana de Metal', header_text_color, font=body_font)
+    draw.text(date_position, today_str, date_text_color, font=date_font)
 
     img.save(img_path)
 
 
-def prepare_background(logger, background_path, resulting_img_path):
+def prepare_background(logger, background_path, resulting_img_path, header_size):
     logger.info('preparing background')
 
     darken_img(logger, background_path, resulting_img_path)
-
-    header_size = (900, 225)
 
     header = Image.new('RGB', header_size)
     bg_image = Image.open(resulting_img_path)
@@ -94,26 +105,32 @@ def create_patch(logger, album, index):
 
     patch_height = 300
     patch_size = (patch_height, patch_height)
-    angle = 180
     gradient_magnitude = 1.5
 
-    patch = Image.open(patch_path)
-    patch = patch.resize(patch_size, Image.ANTIALIAS)
-    patch = patch.rotate(angle)
+    add_gradient_to_img(logger, patch_path, patch_size, gradient_magnitude)
+    add_text_to_patch(logger, patch_path, album)
 
-    patch = patch.convert('RGBA')
-    gradient = Image.new('L', (1, patch_height), color=0xFF)
-    for x in range(patch_height):
-        gradient.putpixel((0, x), int(255 * (1 - gradient_magnitude * float(x) / patch_height)))
-    alpha = gradient.resize(patch_size)
-    black_im = Image.new('RGBA', patch_size, color=0)
+
+def add_gradient_to_img(logger, image_path, image_size, gradient_magnitude):
+    logger.info('adding gradient to image: ' + image_path)
+
+    angle = 180
+
+    image = Image.open(image_path)
+    image = image.resize(image_size, Image.ANTIALIAS)
+    image = image.rotate(angle)
+
+    image = image.convert('RGBA')
+    gradient = Image.new('L', (1, image_size[1]), color=0xFF)
+    for x in range(image_size[1]):
+        gradient.putpixel((0, x), int(255 * (1 - gradient_magnitude * float(x) / image_size[0])))
+    alpha = gradient.resize(image_size)
+    black_im = Image.new('RGBA', image_size, color=0)
     black_im.putalpha(alpha)
-    gradient_im = Image.alpha_composite(patch, black_im)
+    gradient_im = Image.alpha_composite(image, black_im)
     gradient_im = gradient_im.rotate(angle)
 
-    gradient_im.save(patch_path)
-
-    add_text_to_patch(logger, patch_path, album)
+    gradient_im.save(image_path)
 
 
 def add_text_to_patch(logger, patch_path, album):
@@ -195,7 +212,7 @@ def create_collage(logger, album_list):
         patch_path = img_folder_path + '/' + str(i) + '.png'
         patch = Image.open(patch_path)
 
-        collage_position = (300 * math.floor(i / 3), header_height + (300 * (i % 3)))
+        collage_position = (300 *(i % 3), header_height + (300 * math.floor(i / 3)))
 
         collage.paste(patch, collage_position)
 
