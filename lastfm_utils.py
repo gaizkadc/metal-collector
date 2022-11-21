@@ -10,6 +10,8 @@ def lastfm_login(logger):
     username = os.getenv('LASTFM_USERNAME')
     password_hash = os.getenv('LASTFM_PASSWORD_HASH')
 
+    logger.info(username)
+
     lfm = pylast.LastFMNetwork(api_key=api_key, api_secret=api_secret, username=username, password_hash=password_hash)
 
     return lfm

@@ -61,9 +61,22 @@ def create_caption(logger, album_list):
     return caption
 
 
+def create_tumblr_tags(logger, album_list):
+    logger.info('creating tumbler tags')
+
+    artist_list = get_artist_list(logger, album_list)
+
+    tags = []
+
+    for artist in artist_list:
+        tags.append(hashtagize_artist(logger, artist))
+
+    return tags
+
+
 def hashtagize_artist(logger, artist):
     logger.info('hashtagizing artist: ' + artist)
-    return '#' + artist.replace(' ', '').replace('-', '').replace('.', '').replace('&', 'and').replace('!', '') + ' '
+    return '#' + artist.replace(' ', '').replace('-', '').replace('.', '').replace('&', 'and').replace('!', '').replace(',', '') + ' '
 
 
 def get_artist_list(logger, album_list):

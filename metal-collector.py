@@ -1,6 +1,7 @@
 # imports
 import os
 
+import tumblr_utils
 import utils
 import lastfm_utils
 import image_utils
@@ -29,15 +30,20 @@ header_path = image_utils.create_header(logger)
 collage_path = image_utils.create_collage(logger, album_list)
 
 # create caption
-caption = utils.create_caption(logger, album_list)
+twitter_caption = utils.create_caption(logger, album_list)
+tumblr_tags = utils.create_tumblr_tags(logger, album_list)
 
 # tweet collage
 if os.getenv('TWITTER_POST') == '1':
-    twitter_utils.tweet_collage(logger, collage_path, caption)
+    twitter_utils.tweet_collage(logger, collage_path, twitter_caption)
 
 # post collage to instagram
 if os.getenv('INSTAGRAM_POST') == '1':
-    instagram_utils.instagram_collage(logger, collage_path, caption)
+    instagram_utils.instagram_collage(logger, collage_path, twitter_caption)
+
+# post collage to tumblr
+if os.getenv('TUMBLR_POST') == '1':
+    tumblr_utils.tumblr_collage(logger, collage_path, twitter_caption, tumblr_tags)
 
 # done
 logger.info('done ✅')
