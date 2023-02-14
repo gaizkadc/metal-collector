@@ -76,7 +76,7 @@ def create_tumblr_tags(logger, album_list):
 
 def hashtagize_artist(logger, artist):
     logger.info('hashtagizing artist: ' + artist)
-    return '#' + artist.replace(' ', '').replace('-', '').replace('.', '').replace('&', 'and').replace('!', '').replace(',', '') + ' '
+    return '#' + artist.replace(' ', '').replace('-', '').replace('.', '').replace('&', 'and').replace('!', '').replace(',', '').replace("'", "") + ' '
 
 
 def get_artist_list(logger, album_list):
