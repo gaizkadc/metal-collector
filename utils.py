@@ -63,7 +63,7 @@ def create_caption(logger, album_list):
 
 def hashtagize_artist(logger, artist):
     logger.info('hashtagizing artist: ' + artist)
-    return '#' + artist.replace(' ', '').replace('-', '').replace('.', '').replace('&', 'and').replace('!', '') + ' '
+    return '#' + artist.replace(' ', '').replace('-', '').replace('.', '').replace('&', 'and').replace('!', '').replace(',', '') + '\n'
 
 
 def get_artist_list(logger, album_list):
